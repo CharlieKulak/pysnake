@@ -1,13 +1,13 @@
 """Optional asset packs.
 
-OpenSnake ships with no image or sound files: everything is drawn and
+PySnake ships with no image or sound files: everything is drawn and
 synthesized in code. An asset pack is a folder of your own files that replace
 individual built-in sprites, sounds or colours. Any file that is missing falls
 back to the built-in version, so a pack can be as small as one image.
 
 Packs are looked up, in order, in:
-  1. the folder passed with ``opensnake --assets DIR``
-  2. the ``OPENSNAKE_ASSETS`` environment variable
+  1. the folder passed with ``pysnake --assets DIR``
+  2. the ``PYSNAKE_ASSETS`` environment variable
   3. ``<config dir>/assets`` (see ``config_dir``)
 
 See README.md for the list of file names.
@@ -30,19 +30,35 @@ COLOR_KEYS = ("board_light", "board_dark", "board_sand", "board_sand_dark", "bor
               "snake_head", "snake_tail")
 
 
+def _base_dir() -> Path:
+    if sys.platform == "win32":
+        return Path(os.environ.get("APPDATA", Path.home()))
+    if sys.platform == "darwin":
+        return Path.home() / "Library" / "Application Support"
+    return Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
+
+
 def config_dir() -> Path:
     """Where settings, scores, runs, packs and mods live.
 
-    OPENSNAKE_CONFIG_DIR overrides it on every platform (portable installs, tests).
+    PYSNAKE_CONFIG_DIR overrides it on every platform (portable installs, tests).
+    The first time PySnake runs, it brings over the settings this game kept when
+    it was called OpenSnake.
     """
-    override = os.environ.get("OPENSNAKE_CONFIG_DIR")
+    override = os.environ.get("PYSNAKE_CONFIG_DIR") or os.environ.get("OPENSNAKE_CONFIG_DIR")
     if override:
         return Path(override)
-    if sys.platform == "win32":
-        return Path(os.environ.get("APPDATA", Path.home())) / "OpenSnake"
-    if sys.platform == "darwin":
-        return Path.home() / "Library" / "Application Support" / "OpenSnake"
-    return Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "opensnake"
+    new = _base_dir() / ("PySnake" if sys.platform in ("win32", "darwin") else "pysnake")
+    if not new.exists():
+        old = _base_dir() / ("OpenSnake" if sys.platform in ("win32", "darwin") else "opensnake")
+        if old.is_dir():
+            try:
+                import shutil
+                # (Crustacean keeps its own file in the old folder: leave it there)
+                shutil.copytree(old, new, ignore=shutil.ignore_patterns("opensnake-rs.json", "crustacean.json"))
+            except OSError:
+                pass
+    return new
 
 
 def parse_color(value):
@@ -72,7 +88,7 @@ class AssetPack:
 
     @classmethod
     def default(cls, cli_dir: str | None = None) -> "AssetPack":
-        return cls([cli_dir, os.environ.get("OPENSNAKE_ASSETS"), config_dir() / "assets"])
+        return cls([cli_dir, os.environ.get("PYSNAKE_ASSETS"), config_dir() / "assets"])
 
     def _find(self, name: str, exts) -> Path | None:
         for d in self.dirs:
@@ -106,5 +122,5 @@ def load_image(path: Path, size: int) -> pygame.Surface | None:
             img = img.convert_alpha()
         return pygame.transform.smoothscale(img, (size, size))
     except (pygame.error, OSError, ValueError) as e:
-        print(f"opensnake: could not load {path}: {e}", file=sys.stderr)
+        print(f"pysnake: could not load {path}: {e}", file=sys.stderr)
         return None

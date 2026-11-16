@@ -3,29 +3,30 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "opensnake"
-version = "2.6.1"
-description = "A free, open-source desktop snake game with 19 combinable game modes"
+name = "pysnake"
+version = "3.0.0"
+description = "PySnake: a snake game with 17 combinable game modes, and a client for OpenSnake servers"
 readme = "README.md"
-license = "BSD-3-Clause"
+license = "GPL-3.0-or-later"
 requires-python = ">=3.10"
-dependencies = ["pygame-ce>=2.4", "websockets>=13"]
+dependencies = [
+    "pygame-ce>=2.4",
+    "websockets>=13",
+    # The game rules (shared with the server, which replays speedruns with them).
+    "opensnake @ git+https://github.com/CharlieKulak/opensnake.git",
+]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Topic :: Games/Entertainment :: Arcade",
     "Operating System :: OS Independent",
 ]
 
-[project.optional-dependencies]
-# Only needed to run the OpenSnake server (website, accounts, records, versus).
-server = ["aiohttp>=3.9"]
-
 [project.scripts]
-opensnake = "opensnake.app:main"
+pysnake = "pysnake.app:main"
 
 [tool.setuptools.packages.find]
-include = ["opensnake*"]
+include = ["pysnake*"]
 
 [tool.setuptools.package-data]
-opensnake = ["sounds/*.ogg", "sounds/*.wav", "images/*.svg", "images/*.txt", "records.json",
-             "packs/*/*.svg", "packs/*/*.wav", "packs/*/*.ogg", "packs/*/*.png", "packs/*/*.json"]
+pysnake = ["sounds/*.ogg", "sounds/*.wav", "images/*.svg", "images/*.txt", "records.json",
+           "packs/*/*.svg", "packs/*/*.wav", "packs/*/*.ogg", "packs/*/*.png", "packs/*/*.json"]

@@ -12,9 +12,9 @@ import urllib.parse
 
 import pygame
 
-from . import cosmetics as cos
-from .game import DIRS, OPPOSITE, Game, apply_state
-from .modes import MODE_NAMES, VERSUS_MODES, VERSUS_SIZES
+from opensnake import cosmetics as cos
+from opensnake.game import DIRS, OPPOSITE, Game, apply_state
+from opensnake.modes import MODE_NAMES, VERSUS_MODES, VERSUS_SIZES
 from .net import WEB, Request, Socket, page_origin, set_page_title, web_storage_get, web_storage_set, ws_url
 
 SIZES = [(k, f"{k.capitalize()} {w}x{h}") for k, (w, h) in VERSUS_SIZES.items()]
@@ -436,7 +436,7 @@ class Online:
             self.say(m.get("msg", "Error"), BAD)
         elif t == "room":
             if not self.room or self.room.get("code") != m["code"]:
-                set_page_title(f"OpenSnake - match {m['code']}")
+                set_page_title(f"PySnake - match {m['code']}")
             self.room = m
             if self.invite_after_host and m.get("host") == self.my_id:
                 self.send({"t": "invite", "name": self.invite_after_host})
@@ -541,7 +541,7 @@ class Online:
         self.expect_match = False
         if self.sock:
             self.send({"t": "leave"})
-        set_page_title("OpenSnake")
+        set_page_title("PySnake")
         self.room = None
         self.game = None
         self.app.game = None
@@ -1067,7 +1067,7 @@ class Online:
         self.focus = focus
 
     def cycle_bot_level(self) -> None:
-        from .bots import LEVELS
+        from opensnake.bots import LEVELS
         self.bot_level = LEVELS[(LEVELS.index(self.bot_level) + 1) % len(LEVELS)]
 
     def toggle_lobby_friends(self) -> None:

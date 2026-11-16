@@ -1,7 +1,7 @@
 #!/bin/sh
-# Install OpenSnake system-wide, with its menu entry and icon.
+# Install PySnake system-wide, with its menu entry and icon.
 #
-#   sudo ./install.sh              install the OpenSnake program next to this script
+#   sudo ./install.sh              install the PySnake program next to this script
 #   sudo ./install.sh PATH         install the program at PATH instead
 #   sudo ./install.sh --uninstall  remove everything this script installed
 #
@@ -19,27 +19,27 @@ refresh() {
 }
 
 if [ "$1" = "--uninstall" ]; then
-    rm -f "$prefix/bin/opensnake" "$apps/opensnake.desktop" \
-          "$icons/scalable/apps/opensnake.svg" "$icons/256x256/apps/opensnake.png"
+    rm -f "$prefix/bin/pysnake" "$apps/pysnake.desktop" \
+          "$icons/scalable/apps/pysnake.svg" "$icons/256x256/apps/pysnake.png"
     refresh
-    echo "OpenSnake removed."
+    echo "PySnake removed."
     exit 0
 fi
 
-program=${1:-$here/OpenSnake}
+program=${1:-$here/PySnake}
 if [ ! -f "$program" ]; then
-    echo "Can't find the OpenSnake program at $program" >&2
-    echo "Pass its path: sudo ./install.sh /path/to/OpenSnake" >&2
+    echo "Can't find the PySnake program at $program" >&2
+    echo "Pass its path: sudo ./install.sh /path/to/PySnake" >&2
     exit 1
 fi
 
-install -Dm755 "$program" "$prefix/bin/opensnake"
-install -Dm644 "$here/opensnake.desktop" "$apps/opensnake.desktop"
-install -Dm644 "$here/opensnake.svg" "$icons/scalable/apps/opensnake.svg"
-install -Dm644 "$here/opensnake-256.png" "$icons/256x256/apps/opensnake.png"
+install -Dm755 "$program" "$prefix/bin/pysnake"
+install -Dm644 "$here/pysnake.desktop" "$apps/pysnake.desktop"
+install -Dm644 "$here/pysnake.svg" "$icons/scalable/apps/pysnake.svg"
+install -Dm644 "$here/pysnake-256.png" "$icons/256x256/apps/pysnake.png"
 if [ "$prefix" != "/usr" ]; then
     # The menu entry points at /usr/bin by default; follow the chosen prefix.
-    sed -i "s|^Exec=.*|Exec=$prefix/bin/opensnake|" "$apps/opensnake.desktop"
+    sed -i "s|^Exec=.*|Exec=$prefix/bin/pysnake|" "$apps/pysnake.desktop"
 fi
 refresh
-echo "OpenSnake installed: run 'opensnake' or find it in your applications menu."
+echo "PySnake installed: run 'pysnake' or find it in your applications menu."

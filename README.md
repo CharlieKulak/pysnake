@@ -7,7 +7,12 @@ A free, open-source desktop snake game with 19 game modes you can mix
 together, boards from 8 x 5 up to 1000 x 1000, asset packs and Python mods.
 It runs on Linux, Windows and macOS.
 
-OpenSnake is inspired by the browser snake game found in Google search, but it
+PySnake is a client for [OpenSnake](https://github.com/CharlieKulak/opensnake)
+servers: the server keeps accounts, snake points, records and versus matches,
+and any client can play on it, like [Crustacean](https://github.com/CharlieKulak/crustacean)
+(written in Rust). PySnake is the original one, written in Python with pygame.
+
+PySnake is inspired by the browser snake game found in Google search, but it
 is an independent, from-scratch implementation. It contains no code, images or
 sounds from Google Snake, and it is not affiliated with or endorsed by Google.
 The fruit and item artwork is from [Twemoji](https://github.com/jdecked/twemoji)
@@ -32,32 +37,32 @@ or synthesized in code. See [CREDITS.md](CREDITS.md).
 ## Download
 
 Ready-to-play builds are on the
-[Releases page](https://github.com/CharlieKulak/opensnake/releases). They
+[Releases page](https://github.com/CharlieKulak/pysnake/releases). They
 include everything, so you don't need Python.
 
 | System | File | How to run |
 | --- | --- | --- |
-| Windows | `OpenSnake-<version>-windows-x86_64.zip` | Unzip and double-click `OpenSnake.exe`. If Windows SmartScreen warns about an unknown app, click **More info**, then **Run anyway**. |
-| macOS (Apple silicon) | `OpenSnake-<version>-macos-arm64.zip` | Unzip and move `OpenSnake.app` to Applications. The first time, right-click it and choose **Open**, then **Open** again (the app isn't signed with an Apple developer certificate). |
-| Linux (x86-64) | `OpenSnake-<version>-linux-x86_64.tar.gz` | Extract and run `./OpenSnake`, or install it with a menu entry and icon: `sudo ./install.sh` (see below). |
+| Windows | `PySnake-<version>-windows-x86_64.zip` | Unzip and double-click `PySnake.exe`. If Windows SmartScreen warns about an unknown app, click **More info**, then **Run anyway**. |
+| macOS (Apple silicon) | `PySnake-<version>-macos-arm64.zip` | Unzip and move `PySnake.app` to Applications. The first time, right-click it and choose **Open**, then **Open** again (the app isn't signed with an Apple developer certificate). |
+| Linux (x86-64) | `PySnake-<version>-linux-x86_64.tar.gz` | Extract and run `./PySnake`, or install it with a menu entry and icon: `sudo ./install.sh` (see below). |
 
 On Linux, `sudo ./install.sh` (from the extracted folder) installs the game as
-`/usr/bin/opensnake` and adds OpenSnake to your applications menu with its
+`/usr/bin/pysnake` and adds PySnake to your applications menu with its
 icon. `sudo ./install.sh --uninstall` removes it again. To install just for
 yourself without `sudo`, run `PREFIX=~/.local ./install.sh`.
 
-If you installed OpenSnake another way and only want the menu entry, copy
-`packaging/linux/opensnake.desktop` to `~/.local/share/applications/` (or
-`/usr/share/applications/`) and `packaging/linux/opensnake.svg` to
+If you installed PySnake another way and only want the menu entry, copy
+`packaging/linux/pysnake.desktop` to `~/.local/share/applications/` (or
+`/usr/share/applications/`) and `packaging/linux/pysnake.svg` to
 `~/.local/share/icons/hicolor/scalable/apps/`. The entry runs
-`/usr/bin/opensnake`; edit its `Exec=` line if yours is elsewhere.
+`/usr/bin/pysnake`; edit its `Exec=` line if yours is elsewhere.
 
-To play in a web browser, download `OpenSnake-<version>-web.zip`, unzip it,
+To play in a web browser, download `PySnake-<version>-web.zip`, unzip it,
 and run `python3 serve.py` inside the folder; see
 [web-support/README.md](web-support/README.md).
 
-The releases also include `opensnake-<version>-py3-none-any.whl` for people
-who already have Python: `pip install` it, then run `opensnake`.
+The releases also include `pysnake-<version>-py3-none-any.whl` for people
+who already have Python: `pip install` it, then run `pysnake`.
 
 ## Install and play
 
@@ -66,14 +71,14 @@ To run from source you need Python 3.10 or newer.
 ```sh
 python -m venv .venv
 .venv/bin/pip install .          # Windows: .venv\Scripts\pip install .
-.venv/bin/opensnake              # Windows: .venv\Scripts\opensnake
+.venv/bin/pysnake              # Windows: .venv\Scripts\pysnake
 ```
 
 Or run it straight from the source folder:
 
 ```sh
 pip install pygame-ce
-python -m opensnake
+python -m pysnake
 ```
 
 Command-line options:
@@ -216,7 +221,7 @@ each apple a **split** against your PB at the same point: green (`-0.412`)
 means you're ahead, red (`+0.260`) behind.
 
 **WR (world record)** is the fastest verified time anyone has submitted. World
-records are kept in [`opensnake/records.json`](opensnake/records.json) in this
+records are kept in [`pysnake/records.json`](pysnake/records.json) in this
 repository. The game ships with a copy and, when online, downloads the latest
 one from GitHub at start-up, so a new record shows up for everyone without an
 update. (The browser version uses the copy it was built with.) To turn the
@@ -254,18 +259,18 @@ key presses, which is enough to replay the run exactly. The files are in a
 1. Optionally put your name in `settings.json` as `"player_name": "YourName"`
    before your run, so it's in the file.
 2. Open an issue on the
-   [GitHub repository](https://github.com/CharlieKulak/opensnake/issues) and
+   [GitHub repository](https://github.com/CharlieKulak/pysnake/issues) and
    attach the run file.
 
 Anyone can check a run file, and it can't be faked by editing the time:
 
 ```sh
-opensnake --verify sprint10-20261026-013533-8580ms.json
+pysnake --verify sprint10-20261026-013533-8580ms.json
 # VALID   Sprint 10: valid, 0:08.580 (YourName)
 ```
 
 The game replays the run and confirms it really finishes in the claimed time.
-Maintainers then add it to `opensnake/records.json`:
+Maintainers then add it to `pysnake/records.json`:
 
 ```json
 {
@@ -473,8 +478,9 @@ versus: guests play under the name typed in the Username box, or a random
 guest name. The server runs the match itself, so every player sees the same
 game.
 
-To run your own OpenSnake website with accounts, records and versus, see
-[web-support/README.md](web-support/README.md).
+To run your own OpenSnake website with accounts, records and versus, see the
+[OpenSnake server](https://github.com/CharlieKulak/opensnake). It can serve
+PySnake's browser version (see [web-support/README.md](web-support/README.md)).
 
 ## Graphics
 
@@ -537,9 +543,9 @@ Eating plays one of five real crunch recordings, picked at random each time so
 it doesn't sound repetitive, at 35% volume. They are from
 ["7 Eating Crunches"](https://opengameart.org/content/7-eating-crunches) by
 StarNinjas, released as CC0 (public domain). All other sounds are synthesized
-in `opensnake/audio.py`.
+in `pysnake/audio.py`.
 
-To change how loud a sound is, edit `VOLUMES` in `opensnake/audio.py`, or
+To change how loud a sound is, edit `VOLUMES` in `pysnake/audio.py`, or
 replace the sound with an asset pack.
 
 Any sound can be replaced by an [asset pack](#asset-packs) or a [mod](#mods).
@@ -548,9 +554,9 @@ Any sound can be replaced by an [asset pack](#asset-packs) or a [mod](#mods).
 
 Settings, best scores and speedrun PBs are saved automatically to:
 
-- Linux: `~/.config/opensnake/settings.json`
-- macOS: `~/Library/Application Support/OpenSnake/settings.json`
-- Windows: `%APPDATA%\OpenSnake\settings.json`
+- Linux: `~/.config/pysnake/settings.json`
+- macOS: `~/Library/Application Support/PySnake/settings.json`
+- Windows: `%APPDATA%\PySnake\settings.json`
 
 To keep everything in another folder instead (for example a portable copy on
 a USB stick), set the `OPENSNAKE_CONFIG_DIR` environment variable to that
@@ -577,16 +583,16 @@ its `^` `v` buttons or Shift+Up/Down. Changes apply instantly.
 
 **Open packs folder** opens the folder where your own packs go:
 
-- Linux: `~/.config/opensnake/resourcepacks/`
-- macOS: `~/Library/Application Support/OpenSnake/resourcepacks/`
-- Windows: `%APPDATA%\OpenSnake\resourcepacks\`
+- Linux: `~/.config/pysnake/resourcepacks/`
+- macOS: `~/Library/Application Support/PySnake/resourcepacks/`
+- Windows: `%APPDATA%\PySnake\resourcepacks\`
 
 Put each pack in its own folder there, e.g. `resourcepacks/my-pack/`, then
 reopen the Packs & Mods screen.
 
 ### Built-in packs
 
-OpenSnake ships with three packs, all off by default (plus sixteen
+PySnake ships with three packs, all off by default (plus sixteen
 colour-only packs from the online store, which only show up here once you've
 bought or won them):
 
@@ -596,7 +602,7 @@ bought or won them):
 | **Grave Viper** | Realistic and grim: shaded art with highlights and depth. A dark olive viper with amber slit eyes on charred stone, glossy blood-red apples, a rotting poison apple, stone bricks, a weathered headstone, a rusted naval mine, antique iron keys and padlocks, a battered steel shield and a snake hiss. |
 | **Everforest** | Calm and soft, in the [Everforest](https://github.com/sainnhe/everforest) colour scheme: a muted grey-green board, a sage-to-aqua snake, warm fruit colours, mossy stones and gentle wooden sounds. |
 
-They're in `opensnake/packs/` and are good examples to copy when making your
+They're in `pysnake/packs/` and are good examples to copy when making your
 own.
 
 ### Making a pack
@@ -674,12 +680,12 @@ reject any run whose custom category uses a mode that isn't built in.
 
 ### Installing a mod
 
-Put the mod in a mods folder and start OpenSnake. It looks in:
+Put the mod in a mods folder and start PySnake. It looks in:
 
-1. the folder given with `opensnake --mods DIR`
+1. the folder given with `pysnake --mods DIR`
 2. the `OPENSNAKE_MODS` environment variable
 3. a `mods` folder next to `settings.json`, for example
-   `~/.config/opensnake/mods/` on Linux
+   `~/.config/pysnake/mods/` on Linux
 
 A mod is either a single file (`my_mod.py`) or a folder containing an
 `__init__.py` (use a folder when the mod ships images or sounds). Files and
@@ -693,12 +699,12 @@ error is printed, so a buggy mod can't crash the game.
 To try the included example:
 
 ```sh
-opensnake --mods examples/mods
+pysnake --mods examples/mods
 ```
 
 ### Writing a mod
 
-Every mod defines a `setup(api)` function. OpenSnake calls it once at start-up
+Every mod defines a `setup(api)` function. PySnake calls it once at start-up
 with a `ModAPI` object, which the mod uses to register what it adds.
 
 ```python
@@ -761,13 +767,13 @@ built-in name such as `"eat"` replaces that sound (an asset pack still wins).
 | `api.folder` | The folder the mod lives in |
 | `api.asset("file.png")` | Path to a file in the mod's folder |
 | `api.log(...)` | Print a message to the terminal, prefixed with the mod's name |
-| `api.game` | The `opensnake.game` module: `Event`, `Wall`, `Item`, `Apple`, `Seg`, `DIRS`, ... |
-| `api.render` | The `opensnake.render` module: drawing helpers such as `aa_disc`, `bezier`, `ellipse_poly`, `mix` |
+| `api.game` | The `pysnake.game` module: `Event`, `Wall`, `Item`, `Apple`, `Seg`, `DIRS`, ... |
+| `api.render` | The `pysnake.render` module: drawing helpers such as `aa_disc`, `bezier`, `ellipse_poly`, `mix` |
 | `api.api_version` | Currently `1` |
 
 ### The game object
 
-Useful parts of the `Game` passed to hooks (see `opensnake/game.py`):
+Useful parts of the `Game` passed to hooks (see `pysnake/game.py`):
 
 | Attribute / method | Meaning |
 | --- | --- |
@@ -807,28 +813,26 @@ the view:
 
 ### Code layout
 
+The game rules (`game.py`, `modes.py`, `speedrun.py`, `cosmetics.py`, `bots.py`,
+`weeks.py`, `registry.py`) come from the `opensnake` package, the
+[OpenSnake server](https://github.com/CharlieKulak/opensnake)'s repository. They're
+shared with the server, which replays every speedrun with them, so they live
+there. `pip install -e .` installs it.
+
 | File | Contents |
 | --- | --- |
-| `opensnake/game.py` | Game rules and simulation. No pygame, easy to test. |
-| `opensnake/modes.py` | Mode list, conflicts, speed curve, board limits, options. |
-| `opensnake/speedrun.py` | Speedrun categories, timer, replays, `--verify` and world records. |
-| `opensnake/server.py` | The OpenSnake server: website, accounts, site records and versus matches. |
-| `opensnake/net.py` | Talking to a server from the desktop game or the browser. |
-| `opensnake/online.py` | The Online screen, lobby and versus match screens. |
-| `opensnake/hub.py` | The Profile (with Friends and Messages), Store and Community screens. |
-| `opensnake/cosmetics.py` | Snake points, skins, loot boxes, ranks and profile pictures. |
-| `opensnake/bots.py` | Computer players for versus. |
-| `opensnake/records.json` | Speedrun world records. |
-| `opensnake/render.py` | All drawing: board, fruit, snake path, objects, mode icons, the scrolling view. |
-| `opensnake/audio.py` | Sound loading and synthesis. |
-| `opensnake/sounds/` | Bundled sound recordings (see CREDITS.md). |
-| `opensnake/images/` | Bundled SVG artwork (see CREDITS.md). |
-| `opensnake/assets.py` | Asset pack loading. |
-| `opensnake/addons.py` | Finding resource packs and mods for the Packs & Mods screen. |
-| `opensnake/packs/` | Built-in resource packs (Shadow Venom). |
-| `opensnake/mods.py` | Mod loading and the mod API. |
-| `opensnake/registry.py` | Hooks and sounds registered by mods. |
-| `opensnake/app.py` | Window, game loop, menu, HUD, settings. |
+| `pysnake/app.py` | Window, game loop, menu, HUD, settings. |
+| `pysnake/render.py` | All drawing: board, fruit, snake path, objects, mode icons, the scrolling view. |
+| `pysnake/online.py` | The Online screen, lobby and versus match screens. |
+| `pysnake/hub.py` | The Profile (with Friends and Messages), Store and Community screens. |
+| `pysnake/net.py` | Talking to a server from the desktop game or the browser. |
+| `pysnake/records.py` | The bundled world records (`records.json`) and saving run files. |
+| `pysnake/audio.py` | Sound loading and synthesis. |
+| `pysnake/assets.py` | Asset pack loading, and where settings are kept. |
+| `pysnake/addons.py` | Finding resource packs and mods for the Packs & Mods screen. |
+| `pysnake/mods.py` | Mod loading and the mod API. |
+| `pysnake/sounds/`, `pysnake/images/` | Bundled sounds and SVG artwork (see CREDITS.md). |
+| `pysnake/packs/` | Built-in resource packs. |
 | `examples/mods/` | Example mod. |
 | `packaging/launcher.py` | Entry point for the standalone builds. |
 | `packaging/linux/` | Desktop file, icons and install script for Linux. |
@@ -841,18 +845,19 @@ Pushing a version tag builds everything on GitHub Actions
 release, which you then review and publish:
 
 ```sh
-git tag -a v0.2.0 -m "OpenSnake 0.2.0"
-git push origin v0.2.0
+git tag -a v3.0.1 -m "PySnake 3.0.1"
+git push origin v3.0.1
 ```
 
 Bump `version` in `pyproject.toml` and `__version__` in
-`opensnake/__init__.py` first. To build a standalone game for your own system
+`pysnake/__init__.py` first. To build a standalone game for your own system
 locally:
 
 ```sh
 pip install . pyinstaller
-pyinstaller --onefile --windowed --name OpenSnake --paths . \
-  --collect-submodules opensnake --collect-data opensnake packaging/launcher.py
+pyinstaller --onefile --windowed --name PySnake --paths . \
+  --collect-submodules pysnake --collect-data pysnake \
+  --collect-submodules opensnake --exclude-module opensnake.server packaging/launcher.py
 ```
 
 The result is in `dist/`. (On macOS use `--onedir` instead of `--onefile` to
@@ -864,20 +869,24 @@ get an `.app`.) PyInstaller only builds for the system it runs on.
 python -m unittest discover tests
 ```
 
-The tests cover each mode's rules, smooth movement through turns, huge and
-rectangular boards, settings migration, mod loading (including broken mods),
-and a fuzz test that plays random moves through every pair of modes. The
-mod tests print tracebacks from deliberately broken test mods; that is
-expected.
+These test PySnake itself: drawing (every skin on a moving snake), smooth
+movement through turns, settings migration, packs and mods (including broken
+mods), the online client's turn prediction and world records. The mod tests
+print tracebacks from deliberately broken test mods; that is expected. The game
+rules and the server have their own tests in the OpenSnake repository.
 
 ### Contributing
 
-Pull requests are welcome. To add a built-in mode: add it to `MODES` in
-`modes.py`, add its rules in `game.py` (check `self.has("yourmode")`), draw
-anything new in `render.py`, add a menu icon in `mode_icon`, and add a test.
-For something more experimental, consider writing it as a mod first.
+Pull requests are welcome. A new built-in mode starts in the
+[OpenSnake](https://github.com/CharlieKulak/opensnake) repository (its rules in
+`game.py` and `modes.py`, which the server uses too); then draw anything new in
+PySnake's `render.py` and give it a menu icon in `mode_icon`. For something
+more experimental, consider writing it as a mod first.
 
 ## License
 
-The code is BSD 3-Clause; see [LICENSE](LICENSE). The bundled Twemoji artwork
-is CC-BY 4.0 and the eating sounds are CC0; see [CREDITS.md](CREDITS.md).
+PySnake is free software under the GNU General Public License, version 3 or
+(at your option) any later version; see [LICENSE](LICENSE). The bundled Twemoji
+artwork is CC-BY 4.0 and the eating sounds are CC0; see [CREDITS.md](CREDITS.md).
+The game rules it uses come from the OpenSnake server's `opensnake` package
+(BSD 3-Clause).

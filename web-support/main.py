@@ -8,7 +8,7 @@ import pygame  # noqa: F401
 
 
 async def main():
-    from opensnake.app import App
+    from pysnake.app import App
 
     await App().run_async()
 

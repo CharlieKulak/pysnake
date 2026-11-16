@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pygame
 
-from .registry import SOUNDS
+from opensnake.registry import SOUNDS
 
 RATE = 22050
 
@@ -120,7 +120,7 @@ class Sfx:
                 try:
                     variants.append(pygame.mixer.Sound(str(path)))
                 except pygame.error as e:
-                    print(f"opensnake: could not load {path}: {e}", file=sys.stderr)
+                    print(f"pysnake: could not load {path}: {e}", file=sys.stderr)
             if not variants and tones:
                 variants = [pygame.mixer.Sound(buffer=synth(tones, rate, channels).tobytes())]
             for snd in variants:

@@ -1,4 +1,5 @@
-"""Serve the browser build of OpenSnake on your local network.
+"""Serve the browser build of PySnake on your local network (no accounts or versus:
+for those, put it on an OpenSnake server).
 
     python web-support/serve.py [BUILD_DIR] [--port 8000]
 
@@ -14,7 +15,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 # Next to a built game (the release zip) serve this folder; in the repo, the build output.
-DEFAULT_DIR = HERE if (HERE / "index.html").is_file() else HERE / "build" / "opensnake" / "build" / "web"
+DEFAULT_DIR = HERE if (HERE / "index.html").is_file() else HERE / "build" / "pysnake" / "build" / "web"
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):

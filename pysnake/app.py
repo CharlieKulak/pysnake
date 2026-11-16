@@ -14,20 +14,21 @@ import pygame
 
 from . import render
 from .audio import Sfx
-from .game import Game
+from opensnake.game import Game
 from . import __version__
-from .modes import (DEFAULT_BOARD, DEFAULT_SPEED, FRUIT_LABELS, LEGACY_SIZES, LEGACY_SPEEDS,
+from opensnake.modes import (DEFAULT_BOARD, DEFAULT_SPEED, FRUIT_LABELS, LEGACY_SIZES, LEGACY_SPEEDS,
                     MAX_BOARD, MIN_BOARD_H, MIN_BOARD_W, MODE_DESCS, MODES, SNAKE_COLORS, SPEED_SCALE_VERSION,
                     SPEED_TICKS, blend_modes, migrate_speed_v1, mode_label, speed_ms, toggle_mode)
-from .speedrun import (CATEGORIES, Records, Run, format_delta, format_time, load_custom_categories, make_custom,
-                       save_custom_categories, save_run)
+from .records import Records, save_run
+from opensnake.speedrun import (CATEGORIES, Run, format_delta, format_time, load_custom_categories, make_custom,
+                                save_custom_categories)
 from .addons import discover_packs, open_folder, restart_program, user_mods_dir, user_packs_dir
 from .assets import AssetPack, config_dir, load_image
 from .mods import LOADED as MOD_RESULTS
 from .mods import default_dirs as mod_dirs
 from .mods import describe_mod, iter_mods, load_mods
 from .online import Online
-from .cosmetics import SKIN_BY_ID
+from opensnake.cosmetics import SKIN_BY_ID
 from .render import FRUIT_COLORS, Renderer, View, head_position, mode_icon
 
 KEYMAP = {
@@ -236,10 +237,10 @@ def trophy(surf, x, y, size):
 
 class App:
     def __init__(self, assets_dir: str | None = None, mods_dir: str | None = None):
-        # Window class / app id "opensnake" matches StartupWMClass in the
+        # Window class / app id "pysnake" matches StartupWMClass in the
         # .desktop file, so the taskbar shows the right name and icon.
         for hint in ("SDL_VIDEO_X11_WMCLASS", "SDL_VIDEO_WAYLAND_WMCLASS", "SDL_APP_ID"):
-            os.environ.setdefault(hint, "opensnake")
+            os.environ.setdefault(hint, "pysnake")
         pygame.init()
         # Mods first: they can add modes and fruits the settings refer to.
         # (Only the list of disabled mods is needed from the settings for this.)
@@ -247,8 +248,8 @@ class App:
         self.mods_disabled_at_start = set(Store.peek(config_path(), "mods_disabled", []))
         self.mod_results = load_mods(self.mod_dir_list, self.mods_disabled_at_start)
         OPTIONS[0][2][:] = list(FRUIT_LABELS)
-        pygame.display.set_caption("OpenSnake")
-        logo = Path(__file__).parent / "images" / "opensnake.svg"
+        pygame.display.set_caption("PySnake")
+        logo = Path(__file__).parent / "images" / "pysnake.svg"
         try:
             pygame.display.set_icon(pygame.image.load_sized_svg(str(logo), (64, 64)))
         except (pygame.error, FileNotFoundError):
@@ -938,7 +939,7 @@ class App:
         pygame.draw.rect(scr, PANEL, p, border_radius=18)
         ph = p.h
 
-        title = R.font(int(ph * 0.08)).render("OpenSnake", True, (74, 117, 44))
+        title = R.font(int(ph * 0.08)).render("PySnake", True, (74, 117, 44))
         scr.blit(title, title.get_rect(midtop=(p.centerx, p.y + int(ph * 0.025))))
         active = set(self.settings["modes"])
         focused = self.widgets[self.focus]
@@ -1172,7 +1173,7 @@ class App:
         """Rebuild the active assets from the enabled packs (top of the list wins)."""
         known = self.pack_by_id()
         enabled = [known[i].path for i in self.settings["packs"] if i in known]
-        self.pack = AssetPack([self.assets_dir, os.environ.get("OPENSNAKE_ASSETS")] + enabled)
+        self.pack = AssetPack([self.assets_dir, os.environ.get("PYSNAKE_ASSETS")] + enabled)
         render.apply_pack_colors(self.pack)
         self.renderer = Renderer(self.pack)
         self.sfx = Sfx(self.pack)
@@ -1352,7 +1353,7 @@ class App:
                     pygame.draw.rect(scr, (255, 170, 0), r, 3, border_radius=10)
                 ic = row_h - 12
                 if col == 0:
-                    icon = self._icon(item.icon or Path(__file__).parent / "images" / "opensnake.svg", ic)
+                    icon = self._icon(item.icon or Path(__file__).parent / "images" / "pysnake.svg", ic)
                     if icon:
                         scr.blit(icon, (r.x + 6, r.y + 6))
                     name = item.name + ("  (built in)" if item.builtin else "")
@@ -1884,7 +1885,7 @@ class App:
 
 def main(argv=None):
     import argparse
-    parser = argparse.ArgumentParser(prog="opensnake", description="OpenSnake desktop snake game")
+    parser = argparse.ArgumentParser(prog="pysnake", description="PySnake: a snake game and OpenSnake client")
     parser.add_argument("--assets", metavar="DIR", help="folder with an asset pack (images, sounds, pack.json)")
     parser.add_argument("--mods", metavar="DIR", help="extra folder to load mods from")
     parser.add_argument("--verify", metavar="RUN.json", help="replay a saved speedrun and check its time, then exit")
@@ -1896,7 +1897,7 @@ def main(argv=None):
 
 def verify_file(path: str) -> int:
     """Print whether a saved speedrun is valid. Returns a process exit code."""
-    from .speedrun import verify
+    from opensnake.speedrun import verify
     try:
         data = json.loads(Path(path).read_text())
     except (OSError, ValueError) as e:

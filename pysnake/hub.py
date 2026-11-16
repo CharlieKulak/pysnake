@@ -14,10 +14,10 @@ import urllib.parse
 
 import pygame
 
-from . import cosmetics as cos
+from opensnake import cosmetics as cos
 from .net import ImagePicker, decode_png, load_picture
 from .online import ACCENT, BAD, GOOD, INK, MUTED, WHITE
-from .speedrun import category_from_def, describe, format_time
+from opensnake.speedrun import category_from_def, describe, format_time
 
 CARD = (244, 246, 241)
 POINTS = (214, 150, 0)
@@ -156,7 +156,7 @@ class Hub:
         self.on.request("GET", "/api/weekly", then=done, auth=False)
 
     def play_weekly(self, category_id: str) -> None:
-        from .speedrun import weekly_category
+        from opensnake.speedrun import weekly_category
         try:
             cat = weekly_category(category_id)
         except KeyError:
@@ -512,7 +512,7 @@ class Hub:
         if not mine:
             self.on.say("All your custom categories are already shared.", MUTED)
             return
-        from .speedrun import category_def
+        from opensnake.speedrun import category_def
         left = {"n": len(mine), "ok": 0}
 
         def done(r):
@@ -636,7 +636,7 @@ class Hub:
             pygame.draw.circle(self.app.screen, (30, 30, 30), (hx + r * 0.42, hy + side * r * 0.4), r * 0.15)
 
     def app_palette(self, i, n):
-        from .modes import SNAKE_COLORS
+        from opensnake.modes import SNAKE_COLORS
         from .render import mix
         head, tail, _ = SNAKE_COLORS[self.app.settings["color"]]
         return mix(head, tail, i / max(1, n - 1))

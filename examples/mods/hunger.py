@@ -1,6 +1,6 @@
-"""Example OpenSnake mod: a "Hunger" mode and a kiwi fruit.
+"""Example PySnake mod: a "Hunger" mode and a kiwi fruit.
 
-Copy this file into your mods folder (see README.md), start OpenSnake, and
+Copy this file into your mods folder (see README.md), start PySnake, and
 "Hunger" appears in the mode menu and "Kiwi" in the fruit options.
 
 Hunger: every HUNGER_TICKS moves without eating, the snake loses its last

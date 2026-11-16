@@ -92,5 +92,5 @@ def restart_program() -> None:
     if getattr(sys, "frozen", False):   # standalone build: the executable is the game
         os.execv(sys.executable, [sys.executable] + sys.argv[1:])
     if sys.argv and sys.argv[0].endswith("__main__.py"):  # started as "python -m opensnake"
-        os.execv(sys.executable, [sys.executable, "-m", "opensnake"] + sys.argv[1:])
+        os.execv(sys.executable, [sys.executable, "-m", "pysnake"] + sys.argv[1:])
     os.execv(sys.executable, [sys.executable] + sys.argv)

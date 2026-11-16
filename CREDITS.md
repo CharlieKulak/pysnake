@@ -1,15 +1,15 @@
 # Credits
 
-OpenSnake's code is BSD 3-Clause licensed (see LICENSE). The bundled art and
+PySnake's code is licensed under the GNU GPL, version 3 or later (see LICENSE). The bundled art and
 sounds below come from other people and keep their own licenses.
 
 ## Images
 
 The fruit, key, lock, shield, bomb (mine), rock (statue), skull and trophy
-images in `opensnake/images/` are from **Twemoji**, copyright Twitter, Inc and
+images in `pysnake/images/` are from **Twemoji**, copyright Twitter, Inc and
 other contributors, licensed under
 [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/) (full text in
-`opensnake/images/LICENSE-CC-BY-4.0.txt`).
+`pysnake/images/LICENSE-CC-BY-4.0.txt`).
 
 - Source: <https://github.com/jdecked/twemoji>, commit
   `b6b55fef1e8636b540a6d016a4729ca8cdf2e60b`, `assets/svg/`
@@ -36,13 +36,13 @@ other contributors, licensed under
 | `trophy.svg` | 1f3c6 |
 
 Everything else on screen (board, snake, walls, gates, arrows, targets, mode
-icons) is drawn in code. The OpenSnake logo (`opensnake/images/opensnake.svg`,
-`packaging/linux/opensnake.svg`, `opensnake-256.png`) is original to this
-project and BSD 3-Clause licensed like the code.
+icons) is drawn in code. The PySnake logo (`pysnake/images/pysnake.svg`,
+`packaging/linux/pysnake.svg`, `pysnake-256.png`) is original to this
+project and GPL-licensed like the code.
 
 ## Built-in resource packs
 
-All art and sounds in `opensnake/packs/` (Shadow Venom, Grave Viper and
+All art and sounds in `pysnake/packs/` (Shadow Venom, Grave Viper and
 Everforest) are original to this project: the SVGs were drawn for it and the
 sounds were synthesized with the game's own sound generator. They are BSD
 3-Clause licensed like the code.
@@ -55,6 +55,6 @@ licensed. Only the colour values are used; the artwork is original.
 
 | File | Source | Author | License |
 | --- | --- | --- | --- |
-| `opensnake/sounds/eat_1.ogg` ... `eat_5.ogg` | ["7 Eating Crunches"](https://opengameart.org/content/7-eating-crunches) (`crunch.3.ogg` to `crunch.7.ogg`) | StarNinjas | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
+| `pysnake/sounds/eat_1.ogg` ... `eat_5.ogg` | ["7 Eating Crunches"](https://opengameart.org/content/7-eating-crunches) (`crunch.3.ogg` to `crunch.7.ogg`) | StarNinjas | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
 
-All other sounds are synthesized in code (`opensnake/audio.py`).
+All other sounds are synthesized in code (`pysnake/audio.py`).

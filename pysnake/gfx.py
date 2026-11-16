@@ -1,4 +1,4 @@
-"""The few pygame.gfxdraw calls OpenSnake uses, with a fallback.
+"""The few pygame.gfxdraw calls PySnake uses, with a fallback.
 
 pygame.gfxdraw isn't available in every pygame build (the browser build made
 by pygbag lacks it). Where it's missing, the same shapes are drawn with

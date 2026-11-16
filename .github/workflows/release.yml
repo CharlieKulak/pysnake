@@ -39,8 +39,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install
-        # [server] so the server tests run too; the standalone game doesn't bundle it
-        run: python -m pip install ".[server]" "pyinstaller==${{ env.PYINSTALLER_VERSION }}"
+        run: python -m pip install . "pyinstaller==${{ env.PYINSTALLER_VERSION }}"
 
       - name: Test
         run: python -m unittest discover tests
@@ -50,29 +49,30 @@ jobs:
         run: |
           # macOS gets an .app bundle; Linux and Windows get a single file.
           if [ "$RUNNER_OS" = "macOS" ]; then mode=--onedir; else mode=--onefile; fi
-          pyinstaller --noconfirm --clean --windowed $mode --name OpenSnake \
-            --paths . --collect-submodules opensnake --collect-data opensnake \
-            --collect-submodules websockets --exclude-module opensnake.server --exclude-module aiohttp \
+          pyinstaller --noconfirm --clean --windowed $mode --name PySnake \
+            --paths . --collect-submodules pysnake --collect-data pysnake \
+            --collect-submodules opensnake --collect-submodules websockets \
+            --exclude-module opensnake.server --exclude-module aiohttp \
             packaging/launcher.py
 
       - name: Package
         shell: bash
         run: |
-          name="OpenSnake-${GITHUB_REF_NAME#v}-${{ matrix.label }}"
-          [ "$GITHUB_REF_TYPE" = "tag" ] || name="OpenSnake-dev-${{ matrix.label }}"
+          name="PySnake-${GITHUB_REF_NAME#v}-${{ matrix.label }}"
+          [ "$GITHUB_REF_TYPE" = "tag" ] || name="PySnake-dev-${{ matrix.label }}"
           mkdir -p "out/$name"
           # Licenses and credits travel with every download (Twemoji is CC-BY).
           cp README.md LICENSE CREDITS.md "out/$name/"
           case "$RUNNER_OS" in
             Linux)
-              cp dist/OpenSnake packaging/linux/install.sh packaging/linux/opensnake.desktop \
-                 packaging/linux/opensnake.svg packaging/linux/opensnake-256.png "out/$name/"
+              cp dist/PySnake packaging/linux/install.sh packaging/linux/pysnake.desktop \
+                 packaging/linux/pysnake.svg packaging/linux/pysnake-256.png "out/$name/"
               tar -czf "$name.tar.gz" -C out "$name" ;;
             Windows)
-              cp dist/OpenSnake.exe "out/$name/"
+              cp dist/PySnake.exe "out/$name/"
               (cd out && 7z a -tzip "../$name.zip" "$name" > /dev/null) ;;
             macOS)
-              cp -R dist/OpenSnake.app "out/$name/"
+              cp -R dist/PySnake.app "out/$name/"
               ditto -c -k --keepParent "out/$name" "$name.zip" ;;
           esac
           ls -la "$name".*
@@ -81,8 +81,8 @@ jobs:
         with:
           name: standalone-${{ matrix.label }}
           path: |
-            OpenSnake-*.tar.gz
-            OpenSnake-*.zip
+            PySnake-*.tar.gz
+            PySnake-*.zip
 
   python-packages:
     name: Wheel and source archive
@@ -109,20 +109,20 @@ jobs:
           python-version: "3.12"
       - run: python -m pip install "pygbag==0.9.3"
       - name: Build
-        run: PYTHON=python web-support/build.sh
+        run: python -m pip install -e . && PYTHON=python web-support/build.sh
       - name: Package
         run: |
-          name="OpenSnake-${GITHUB_REF_NAME#v}-web"
-          [ "$GITHUB_REF_TYPE" = "tag" ] || name="OpenSnake-dev-web"
+          name="PySnake-${GITHUB_REF_NAME#v}-web"
+          [ "$GITHUB_REF_TYPE" = "tag" ] || name="PySnake-dev-web"
           mkdir -p "out/$name"
-          cp -R web-support/build/opensnake/build/web/. "out/$name/"
+          cp -R web-support/build/pysnake/build/web/. "out/$name/"
           cp web-support/serve.py web-support/README.md LICENSE CREDITS.md "out/$name/"
           (cd out && zip -qr "../$name.zip" "$name")
           ls -la "$name.zip"
       - uses: actions/upload-artifact@v7.0.2
         with:
           name: web
-          path: OpenSnake-*-web.zip
+          path: PySnake-*-web.zip
 
   release:
     name: Draft release
@@ -141,4 +141,4 @@ jobs:
           ls -la files
           gh release create "$GITHUB_REF_NAME" files/* \
             --repo "$GITHUB_REPOSITORY" --draft \
-            --title "OpenSnake ${GITHUB_REF_NAME}" --generate-notes
+            --title "PySnake ${GITHUB_REF_NAME}" --generate-notes

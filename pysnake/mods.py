@@ -17,11 +17,11 @@ import sys
 import traceback
 from pathlib import Path
 
-from . import game as game_module
-from . import modes as modes_module
+from opensnake import game as game_module
+from opensnake import modes as modes_module
 from . import render as render_module
 from .assets import config_dir
-from .registry import MODE_HOOKS, SOUNDS, ModeHooks
+from opensnake.registry import MODE_HOOKS, SOUNDS, ModeHooks
 
 API_VERSION = 1
 _ID = re.compile(r"^[a-z][a-z0-9_]{0,31}$")
@@ -90,7 +90,7 @@ class ModAPI:
 
 
 def default_dirs(cli_dir: str | None = None) -> list[Path]:
-    dirs = [cli_dir, os.environ.get("OPENSNAKE_MODS"), config_dir() / "mods"]
+    dirs = [cli_dir, os.environ.get("PYSNAKE_MODS"), config_dir() / "mods"]
     return [Path(d).expanduser() for d in dirs if d]
 
 
@@ -145,7 +145,7 @@ def load_mods(dirs, disabled=()) -> list[tuple[str, str | None]]:
             setup(ModAPI(name, folder))
             LOADED.append((name, None))
         except Exception as e:  # report and carry on without this mod
-            print(f"opensnake: mod '{name}' failed to load:", file=sys.stderr)
+            print(f"pysnake: mod '{name}' failed to load:", file=sys.stderr)
             traceback.print_exc()
             LOADED.append((name, f"{type(e).__name__}: {e}"))
     return LOADED

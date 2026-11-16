@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.5
+Name=PySnake
+GenericName=Snake Game
+Comment=Snake game with 17 game modes you can mix together (an OpenSnake client)
+Exec=/usr/bin/pysnake
+Icon=pysnake
+Terminal=false
+Categories=Game;ArcadeGame;
+Keywords=snake;arcade;retro;apple;opensnake;
+StartupWMClass=pysnake

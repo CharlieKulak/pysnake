@@ -12,11 +12,13 @@ from pathlib import Path
 
 import pygame
 
-from . import gfx, modes
+from opensnake import modes
+
+from . import gfx
 from .assets import load_image
-from .cosmetics import skin_color, skin_outline
-from .game import DIRS
-from .registry import MODE_HOOKS
+from opensnake.cosmetics import skin_color, skin_outline
+from opensnake.game import DIRS
+from opensnake.registry import MODE_HOOKS
 
 SS = 4
 

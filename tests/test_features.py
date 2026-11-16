@@ -52,7 +52,7 @@ class SettingsMigrationTests(unittest.TestCase):
     def test_old_named_size_and_speed(self):
         import pygame
         pygame.init()
-        from opensnake.app import Store
+        from pysnake.app import Store
         with tempfile.TemporaryDirectory() as d:
             path = Path(d) / "settings.json"
             path.write_text(json.dumps({"settings": {"size": "large", "speed": "fast"}}))
@@ -62,7 +62,7 @@ class SettingsMigrationTests(unittest.TestCase):
             self.assertNotIn("size", s)
 
     def test_old_slider_scale_keeps_speeds_and_bests(self):
-        from opensnake.app import Store
+        from pysnake.app import Store
         with tempfile.TemporaryDirectory() as d:
             path = Path(d) / "settings.json"
             # Saved by the 3-stop slider (0 = Slow, 0.5 = Default, 1 = Fast).
@@ -77,7 +77,7 @@ class SettingsMigrationTests(unittest.TestCase):
             self.assertEqual(again.best["classic:17x15:0.75:1"], 42)
 
     def test_numbers_are_clamped(self):
-        from opensnake.app import Store
+        from pysnake.app import Store
         with tempfile.TemporaryDirectory() as d:
             path = Path(d) / "settings.json"
             path.write_text(json.dumps({"settings": {"board_w": 5000, "board_h": 1, "speed": "x"}}))
@@ -89,12 +89,12 @@ class SettingsMigrationTests(unittest.TestCase):
 class ModTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        from opensnake import mods
+        from pysnake import mods
         if not any(name == "hunger" for name, _ in mods.LOADED):
             mods.load_mods([EXAMPLES])
 
     def test_example_mod_registers(self):
-        from opensnake import mods
+        from pysnake import mods
         from opensnake.game import FRUITS
         from opensnake.modes import FRUIT_LABELS, MODE_NAMES
         self.assertIn(("hunger", None), mods.LOADED)
@@ -113,7 +113,7 @@ class ModTests(unittest.TestCase):
         self.assertEqual(len(g.snakes[0].body), n - 1)
 
     def test_broken_mod_is_reported_not_fatal(self):
-        from opensnake import mods
+        from pysnake import mods
         with tempfile.TemporaryDirectory() as d:
             Path(d, "broken_mod.py").write_text("def setup(api):\n    raise RuntimeError('boom')\n")
             Path(d, "no_setup.py").write_text("x = 1\n")
@@ -123,7 +123,7 @@ class ModTests(unittest.TestCase):
         self.assertIn("setup", errors["no_setup"])
 
     def test_failing_hook_is_disabled(self):
-        from opensnake import mods
+        from pysnake import mods
         with tempfile.TemporaryDirectory() as d:
             Path(d, "crashy.py").write_text(
                 "def setup(api):\n"
@@ -147,9 +147,9 @@ class MainLoopTests(unittest.TestCase):
 
     def run_app_once(self, setup=None):
         import pygame
-        from opensnake.app import App
+        from pysnake.app import App
         with tempfile.TemporaryDirectory() as d:
-            os.environ["OPENSNAKE_CONFIG_DIR"] = str(Path(d) / "opensnake")
+            os.environ["PYSNAKE_CONFIG_DIR"] = str(Path(d) / "opensnake")
             app = App()
             if setup:
                 setup(app)
@@ -169,10 +169,10 @@ class MainLoopTests(unittest.TestCase):
 class CustomSpeedrunAppTests(unittest.TestCase):
     def test_checkbox_play_and_saved_category(self):
         import pygame
-        from opensnake.app import App
+        from pysnake.app import App
         from opensnake.speedrun import load_custom_categories
         with tempfile.TemporaryDirectory() as d:
-            os.environ["OPENSNAKE_CONFIG_DIR"] = str(Path(d) / "opensnake")
+            os.environ["PYSNAKE_CONFIG_DIR"] = str(Path(d) / "opensnake")
             app = App()
             s = app.settings
             s.update(speedrun_mode=True, sr_goal=7, modes=["wall"], board_w=12, board_h=10)
@@ -204,13 +204,13 @@ class CustomSpeedrunAppTests(unittest.TestCase):
 class PacksAndModsTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
-        os.environ["OPENSNAKE_CONFIG_DIR"] = str(Path(self.tmp.name) / "opensnake")
+        os.environ["PYSNAKE_CONFIG_DIR"] = str(Path(self.tmp.name) / "opensnake")
 
     def tearDown(self):
         self.tmp.cleanup()
 
     def test_builtin_pack_is_found(self):
-        from opensnake.addons import discover_packs
+        from pysnake.addons import discover_packs
         packs = {p.id: p for p in discover_packs()}
         self.assertIn("builtin:shadow_venom", packs)
         self.assertEqual(packs["builtin:grave_viper"].name, "Grave Viper")
@@ -220,8 +220,8 @@ class PacksAndModsTests(unittest.TestCase):
         self.assertTrue(venom.builtin and venom.icon is not None)
 
     def test_enable_disable_and_priority(self):
-        from opensnake import render
-        from opensnake.app import App
+        from pysnake import render
+        from pysnake.app import App
         app = App()
         default_light = render.LIGHT
         app.open_addons()
@@ -246,11 +246,11 @@ class PacksAndModsTests(unittest.TestCase):
         self.assertEqual(render.LIGHT, default_light)
         self.assertIsNone(app.pack.image_path("snake_head"))
         # and the setting is saved
-        from opensnake.app import Store, config_path
+        from pysnake.app import Store, config_path
         self.assertEqual(Store(config_path()).settings["packs"], [])
 
     def test_disabled_mod_is_not_loaded(self):
-        from opensnake import mods
+        from pysnake import mods
         d = Path(self.tmp.name) / "m"
         d.mkdir()
         (d / "sleepy_mod.py").write_text('"""A test mod."""\ndef setup(api):\n    raise SystemError("should not run")\n')
@@ -262,7 +262,7 @@ class PacksAndModsTests(unittest.TestCase):
 
     def test_addons_screen_draws_and_main_loop_runs(self):
         import pygame
-        from opensnake.app import App
+        from pysnake.app import App
         app = App()
         app.open_addons()
         app.draw()
@@ -278,8 +278,8 @@ class BuiltinPackContentTests(unittest.TestCase):
 
     def test_all_builtin_pack_files_load(self):
         import pygame
-        from opensnake.addons import BUILTIN_PACKS
-        from opensnake.assets import AssetPack, load_image
+        from pysnake.addons import BUILTIN_PACKS
+        from pysnake.assets import AssetPack, load_image
         pygame.init()
         expected = {"snake_head", "fruit_apple", "fruit_poison", "wall", "statue", "mine", "key", "lock",
                     "shield", "trophy", "ring", "target", "arrow", "gate_open", "gate_closed", "pack"}
@@ -305,10 +305,10 @@ class TurnResponseTests(unittest.TestCase):
 
     def turn_delay(self, speed, boost=True):
         import pygame
-        from opensnake import app as app_module
-        from opensnake.app import App
+        from pysnake import app as app_module
+        from pysnake.app import App
         with tempfile.TemporaryDirectory() as d:
-            os.environ["OPENSNAKE_CONFIG_DIR"] = d
+            os.environ["PYSNAKE_CONFIG_DIR"] = d
             app = App()
             app.settings["speed"] = speed
             app.play()
@@ -342,10 +342,10 @@ class TurnResponseTests(unittest.TestCase):
 
     def test_speedrun_time_counts_moves_not_boost(self):
         import pygame
-        from opensnake.app import App
+        from pysnake.app import App
         from opensnake.speedrun import CATEGORY_BY_ID
         with tempfile.TemporaryDirectory() as d:
-            os.environ["OPENSNAKE_CONFIG_DIR"] = d
+            os.environ["PYSNAKE_CONFIG_DIR"] = d
             app = App()
             app.start_run(CATEGORY_BY_ID["accelerate"])  # starts at 170 ms per cell
             key = lambda k: app.handle(pygame.event.Event(pygame.KEYDOWN, key=k, mod=0, unicode=""))
@@ -365,8 +365,8 @@ class ModsOnlineTests(unittest.TestCase):
 
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
-        os.environ["OPENSNAKE_CONFIG_DIR"] = self.tmp.name
-        from opensnake.app import App
+        os.environ["PYSNAKE_CONFIG_DIR"] = self.tmp.name
+        from pysnake.app import App
         self.app = App()
         self.on = self.app.online
         self.on.server_state = "ok"
