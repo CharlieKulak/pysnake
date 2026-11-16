@@ -3,6 +3,11 @@ https://snake.charliekulak.com
 ###         FULLY AI GENERATED, Don't @ me.         ###
 ###                                                 ###
 
+> **PySnake is outdated and no longer maintained.** It has been replaced by
+> [Crustacean](https://github.com/CharlieKulak/crustacean), the OpenSnake client
+> on https://snake.charliekulak.com. This repository is archived and kept for
+> reference.
+
 A free, open-source desktop snake game with 19 game modes you can mix
 together, boards from 8 x 5 up to 1000 x 1000, asset packs and Python mods.
 It runs on Linux, Windows and macOS.

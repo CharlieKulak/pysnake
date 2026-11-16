@@ -1861,7 +1861,28 @@ class App:
             self.online.draw_lobby()
         elif self.state == "matches":
             self.online.draw_matches()
+        if self.state not in ("play", "versus"):
+            self.draw_outdated_notice()
         self.online.draw_popups()
+
+    def draw_outdated_notice(self):
+        """PySnake isn't maintained any more: say so (on every screen but the game itself)."""
+        scr = self.screen
+        R = self.renderer
+        w, h = scr.get_size()
+        size = max(16, int(h * 0.03))
+        lines = ["PySnake is outdated and no longer maintained.",
+                 "Play Crustacean instead: snake.charliekulak.com (github.com/CharlieKulak/crustacean)"]
+        texts = [R.font(size).render(lines[0], True, (255, 255, 255)),
+                 R.font(size, False).render(lines[1], True, (255, 236, 200))]
+        bar_h = sum(t.get_height() for t in texts) + int(size * 0.9)
+        bar = pygame.Surface((w, bar_h), pygame.SRCALPHA)
+        bar.fill((176, 48, 32, 235))
+        scr.blit(bar, (0, h - bar_h))
+        y = h - bar_h + int(size * 0.45)
+        for t in texts:
+            scr.blit(t, t.get_rect(midtop=(w // 2, y)))
+            y += t.get_height()
 
     def frame(self):
         dt = self.clock.tick(60 if WEB else 120)
