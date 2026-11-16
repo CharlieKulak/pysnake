@@ -230,6 +230,17 @@ class RecordsTests(unittest.TestCase):
             self.assertEqual(r.source, "bundled")
 
 
+class CustomRecordsTests(unittest.TestCase):
+    def test_custom_world_records_are_accepted(self):
+        from opensnake.speedrun import make_custom
+        cid = make_custom(10, 9, [], 5, 1, 130).id
+        with tempfile.TemporaryDirectory() as d:
+            cache = Path(d) / "records.json"
+            cache.write_text(json.dumps({"updated": "2999-01-01",
+                                         "records": {cid: {"time_ms": 4000, "player": "x"}}}))
+            self.assertEqual(Records(cache).get(cid)["time_ms"], 4000)
+
+
 class SiteRecordsTests(unittest.TestCase):
     def test_site_records_replace_and_restore(self):
         r = Records(None)
