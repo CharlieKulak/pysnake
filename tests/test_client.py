@@ -256,5 +256,14 @@ class SiteRecordsTests(unittest.TestCase):
         self.assertNotEqual(r.source.split(":")[0], "site")
 
 
+
+class PackFilesTests(unittest.TestCase):
+    def test_every_catalogue_pack_ships_locked_until_owned(self):
+        from pysnake.addons import BUILTIN_PACKS
+        for pack in cos.PACKS:
+            meta = (BUILTIN_PACKS / pack.id / "pack.json").read_text()
+            self.assertIn('"locked": true', meta, pack.id)
+
+
 if __name__ == "__main__":
     unittest.main()
